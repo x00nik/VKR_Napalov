@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ClaZ0l5l71o=",
+  "dgSpecHash": "z3/YrD9wfiE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\napalov_ev\\Desktop\\bak\\йцу\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
+  "projectFilePath": "C:\\Users\\napalov_ev\\Desktop\\bak\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\napalov_ev\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\napalov_ev\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",

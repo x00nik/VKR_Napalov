@@ -492,11 +492,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\napalov_ev\\Desktop\\bak\\йцу\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
+      "projectUniqueName": "C:\\Users\\napalov_ev\\Desktop\\bak\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
       "projectName": "DeepfakeDetectorApp",
-      "projectPath": "C:\\Users\\napalov_ev\\Desktop\\bak\\йцу\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
+      "projectPath": "C:\\Users\\napalov_ev\\Desktop\\bak\\DeepfakeDetectorApp\\DeepfakeDetectorApp.csproj",
       "packagesPath": "C:\\Users\\napalov_ev\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\napalov_ev\\Desktop\\bak\\йцу\\DeepfakeDetectorApp\\obj\\",
+      "outputPath": "C:\\Users\\napalov_ev\\Desktop\\bak\\DeepfakeDetectorApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\napalov_ev\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -555,7 +555,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

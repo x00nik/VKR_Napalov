@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Controls;
 using NAudio.Wave;
+using NAudio.CoreAudioApi;
 
 namespace DeepfakeDetectorApp
 {
@@ -16,7 +17,7 @@ namespace DeepfakeDetectorApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private WaveInEvent? waveIn;
+        private IWaveIn? waveIn;
         private WaveFileWriter? writer;
         private DispatcherTimer? timer;
         private DateTime startTime;
@@ -76,25 +77,31 @@ namespace DeepfakeDetectorApp
             
             try
             {
-                for (int i = 0; i < WaveInEvent.DeviceCount; i++)
+                var enumerator = new MMDeviceEnumerator();
+                var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+                
+                int index = 0;
+                foreach (var device in devices)
                 {
-                    var caps = WaveInEvent.GetCapabilities(i);
-                    string name = caps.ProductName;
+                    string name = device.FriendlyName;
                     
-                    if (name.Contains("Stereo", StringComparison.OrdinalIgnoreCase) || 
-                        name.Contains("Микшер", StringComparison.OrdinalIgnoreCase) ||
-                        name.Contains("Mix", StringComparison.OrdinalIgnoreCase))
+                    // Добавляем иконку для устройств вывода
+                    if (name.Contains("Speakers", StringComparison.OrdinalIgnoreCase) || 
+                        name.Contains("Динамики", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("Headphones", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("Наушники", StringComparison.OrdinalIgnoreCase))
                     {
                         name = "🔊 " + name + " (рекомендуется)";
                     }
                     
-                    MicrophoneCombo.Items.Add(new AudioDevice(name, i));
+                    MicrophoneCombo.Items.Add(new AudioDevice(name, device.ID));
+                    index++;
                 }
                 
                 if (MicrophoneCombo.Items.Count > 0)
                     MicrophoneCombo.SelectedIndex = 0;
                 else
-                    MessageBox.Show("Устройства записи не найдены!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Устройства вывода не найдены!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
@@ -174,7 +181,7 @@ namespace DeepfakeDetectorApp
                         $"Записывается 5 секунд для анализа CNN", 
                         Colors.Orange);
                 
-                StartRecording(device.DeviceNumber, quickCheckFile, QUICK_CHECK_DURATION);
+                StartRecording(device.DeviceId, quickCheckFile, QUICK_CHECK_DURATION);
             }
             catch (Exception ex)
             {
@@ -182,18 +189,16 @@ namespace DeepfakeDetectorApp
             }
         }
 
-        private void StartRecording(int deviceNumber, string fileName, double duration)
+        private void StartRecording(string deviceId, string fileName, double duration)
         {
             StopRecording();
 
             try
             {
-                waveIn = new WaveInEvent
-                {
-                    DeviceNumber = deviceNumber,
-                    WaveFormat = new WaveFormat(16000, 1),
-                    BufferMilliseconds = 50
-                };
+                var enumerator = new MMDeviceEnumerator();
+                var device = enumerator.GetDevice(deviceId);
+                
+                waveIn = new WasapiLoopbackCapture(device);
 
                 string path = Path.GetFullPath(fileName);
                 writer = new WaveFileWriter(path, waveIn.WaveFormat);
@@ -232,8 +237,8 @@ namespace DeepfakeDetectorApp
                 MessageBox.Show(
                     $"Ошибка при запуске записи:\n{ex.Message}\n\n" +
                     "Попробуйте:\n" +
-                    "1. Выбрать другое устройство\n" +
-                    "2. Включить Stereo Mix (если есть)\n" +
+                    "1. Выбрать другое устройство вывода\n" +
+                    "2. Убедитесь что звук воспроизводится\n" +
                     "3. Перезапустить приложение",
                     "Ошибка записи",
                     MessageBoxButton.OK,
@@ -362,7 +367,7 @@ namespace DeepfakeDetectorApp
                                     $"Записывается {fullDuration:F0} секунд", 
                                     Colors.Blue);
                             
-                            StartRecording(device.DeviceNumber, fullRecordingFile, fullDuration);
+                            StartRecording(device.DeviceId, fullRecordingFile, fullDuration);
                         }
                     }
                     else
@@ -554,12 +559,12 @@ namespace DeepfakeDetectorApp
         private class AudioDevice
         {
             public string Name { get; }
-            public int DeviceNumber { get; }
+            public string DeviceId { get; }
 
-            public AudioDevice(string name, int deviceNumber)
+            public AudioDevice(string name, string deviceId)
             {
                 Name = name;
-                DeviceNumber = deviceNumber;
+                DeviceId = deviceId;
             }
 
             public override string ToString() => Name;
