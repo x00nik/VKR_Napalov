@@ -1,0 +1,5 @@
+{
+  "ServerUrl": "http://localhost:5000",
+  "ConnectionTimeout": 300
+}
+
